@@ -12,7 +12,7 @@ const Navbar = () => {
 
     return (
         <nav className="border-b border-foreground/10 bg-transparent">
-            <div className="container flex items-center justify-between px-5 py-3">
+            <div className="flex items-center justify-between px-5 py-3">
                 {/* Logo */}
                 <div className="w-24">
                     <img src={theme === 'light' ? DarkLogo : LightLogo} alt="StarVoxx Logo" className="w-full" />

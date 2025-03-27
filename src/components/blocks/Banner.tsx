@@ -16,13 +16,13 @@ const Banner = () => {
 
             {/* Right Side: Text Content */}
             <div className="md:block flex flex-col justify-center items-center w-full lg:w-1/2 text-center lg:text-left">
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
-                    Book Personalized 
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-balance">
+                    Book Personalized<br/> 
+                    <span className="text-primary">
+                        Video Shoutouts
+                    </span>
                 </h1>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight text-primary">
-                    Video Shoutouts
-                </h1>
-                <p className="text-md md:text-lg text-gray-600 dark:text-gray-300 mt-4">
+                <p className="text-md md:text-lg text-gray-600 dark:text-gray-300 mt-4 text-balance">
                     Make memories last a lifetime with a special message from your favorite stars.
                 </p>
 

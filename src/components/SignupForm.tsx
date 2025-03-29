@@ -8,23 +8,78 @@ import { ChevronLeft } from "lucide-react";
 import DarkLogo from '@/assets/trimmed-starvoxx-logo-dark.png';
 import LightLogo from '@/assets/trimmed-starvoxx-logo.png';
 import { useTheme } from "./theme-provider.tsx";
+import { useEffect, useState } from "react";
 
 
 const SignupForm = () => {
     const { theme } = useTheme()
+    const [firstName, setFirstName] = useState('')
+    const [lastName, setLastName] = useState('')
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [confirmPassword, setConfirmPassword] = useState('')
+
+    // REGEX TO VALIDATE FORM INPUT
+    const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{1,23}$/;
+    const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
+
+    // STATES TO TRACK ERRORS
+    const [isValidFirstName, setIsValidFirstName] = useState(true)
+    const [isValidLastName, setIsValidLastName] = useState(true)
+    const [isValidEmail, setIsValidEmail] = useState(true)
+    const [isValidPassword, setIsValidPassword] = useState(true)
+    const [isValidConfirmPassword, setIsValidConfirmPassword] = useState(true)
+
+    useEffect(() => {
+            if (firstName){
+                setIsValidFirstName(USER_REGEX.test(firstName))
+            }
+    }, [firstName])
+
+    useEffect(() => {
+            if(lastName){
+                setIsValidLastName(USER_REGEX.test(lastName))
+            }
+    }, [lastName])
+
+    useEffect(() => {
+            if(email){
+                setIsValidEmail(EMAIL_REGEX.test(email))
+            }
+    }, [email])
+
+    useEffect(() => {
+            if(password){
+                setIsValidPassword(PWD_REGEX.test(password))
+            }
+    }, [password])
+
+    useEffect(() => {
+        if (confirmPassword) {
+            setIsValidConfirmPassword(password === confirmPassword);
+        }
+    }, [password, confirmPassword]);
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        // Submit Form To Backend
+        console.log({firstName, lastName, email, password, confirmPassword})
+        // Clear Form
+    }
 
     return (
-            <div className="flex flex-col gap-6">
+            <div className="flex flex-col gap-4">
                 <Card className="overflow-hidden py-0">
                     <CardContent className="grid p-0 md:grid-cols-2">
                         {/* Form */}
-                        <form className="p-6 md:p-8">
-                            <div className="flex flex-col gap-6">
+                        <form className="p-6 md:p-8" onSubmit={handleSubmit}>
+                            <div className="flex flex-col gap-4">
                                 {/* Form Heading */}
                                 <div className="flex flex-col items-center text-center">
                                     <h1 className="text-2xl font-bold">Create account</h1>
                                     <p 
-                                        className="itext-balance text-muted-foreground
+                                        className="text-balance text-muted-foreground
                                         flex"
                                     >
                                         Create a &nbsp;
@@ -45,7 +100,10 @@ const SignupForm = () => {
                                         type="text"
                                         placeholder="nigel"
                                         required
+                                        onChange={(e) => setFirstName(e.target.value)}
+                                        className={`focus:outline-none ${!isValidFirstName ? "border-red-300": ""}`}
                                     />
+                                    {!isValidFirstName && <div className="text-sm text-red-400 bg-red-100/95 px-2">* Please enter a valid first name.</div>}
                                 </div>
                                 {/* Last Name */}
                                 <div className="grid gap-2">
@@ -55,7 +113,9 @@ const SignupForm = () => {
                                         type="text"
                                         placeholder="zenter"
                                         required
+                                        onChange={(e) => setLastName(e.target.value)}
                                     />
+                                    {!isValidLastName && <div className="text-sm text-red-400 bg-red-100/95 px-2">* Please enter a valid last name.</div>}
                                 </div>
                                 {/* Email */}
                                 <div className="grid gap-2">
@@ -65,7 +125,9 @@ const SignupForm = () => {
                                         type="email"
                                         placeholder="nigel@example.com"
                                         required
+                                        onChange={(e) => setEmail(e.target.value)}
                                     />
+                                    {!isValidEmail && <div className="text-sm text-red-400 bg-red-100/95 px-2">* Please enter a valid email.</div>}
                                 </div>
                                 {/* Password */}
                                 <div className="grid gap-2">
@@ -75,7 +137,9 @@ const SignupForm = () => {
                                         type="password"
                                         placeholder="********"
                                         required
+                                        onChange={(e) => setPassword(e.target.value)}
                                     />
+                                    {!isValidPassword && <div className="text-sm text-red-400 bg-red-100/95 px-2">* Password too weak.</div>}
                                 </div>
                                 {/* Confirm Password */}
                                 <div className="grid gap-2">
@@ -85,11 +149,19 @@ const SignupForm = () => {
                                         type="password"
                                         placeholder="********"
                                         required
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
                                     />
+                                    {!isValidConfirmPassword && <div className="text-sm text-red-400 bg-red-100/80 px-2">Passwords do not match.</div>}
                                 </div>
                                 {/* Submit */}
                                 <div>
-                                    <Button type="submit" className="w-full">Join</Button>
+                                    <Button 
+                                        type="submit" 
+                                        className="w-full" 
+                                        disabled={!isValidFirstName || !isValidLastName || !isValidEmail || !isValidPassword || !isValidConfirmPassword}
+                                    >
+                                        Join
+                                    </Button>
                                 </div>
                                 {/* Alternative Signup Method */}
                                 <div>

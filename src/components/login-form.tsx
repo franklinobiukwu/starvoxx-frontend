@@ -9,6 +9,7 @@ import DarkLogo from '@/assets/trimmed-starvoxx-logo-dark.png';
 import LightLogo from '@/assets/trimmed-starvoxx-logo.png';
 import { useTheme } from "./theme-provider"
 import { ChevronLeft } from "lucide-react"
+import { useEffect, useState } from "react";
 
 
 export function LoginForm({
@@ -17,11 +18,37 @@ export function LoginForm({
 }: React.ComponentProps<"div">) {
 
     const { theme } = useTheme()
+
+    // Form Input States
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+
+    // States to track invalid form input data
+    const [isValidEmail, setIsValidEmail] = useState(true)
+    const [isValidPassword, setIsValidPassword] = useState(true)
+    
+    // REGEX TO VALIDATE FORM INPUT
+    const EMAIL_REGEX = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%*]).{8,24}$/;
+
+    useEffect(() => {
+            if (email) setIsValidEmail(EMAIL_REGEX.test(email))
+    }, [email])
+
+    useEffect(() => {
+            if (password) setIsValidPassword(PWD_REGEX.test(password))
+            }, [password])
+
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        console.log({email, password})
+    }
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden py-0">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">Welcome back</h1>
@@ -35,6 +62,7 @@ export function LoginForm({
                   id="email"
                   type="email"
                   placeholder="nigel@example.com"
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -48,9 +76,19 @@ export function LoginForm({
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" placeholder="********" required />
+                <Input 
+                    id="password"
+                    type="password"
+                    placeholder="********"
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                />
               </div>
-              <Button type="submit" className="w-full">
+              <Button
+                type="submit"
+                className="w-full"
+                disabled={!isValidEmail || !isValidPassword}
+                >
                 Login
               </Button>
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
